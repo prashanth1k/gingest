@@ -1,0 +1,42 @@
+# Git
+.git
+.gitignore
+
+# Documentation
+README.md
+*.md
+docs/
+
+# Test files
+*_test.go
+integration_test.go
+test/
+tests/
+
+# Build artifacts
+gingest
+gingest.exe
+gingest-*
+*.exe
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.temp
+*.log
+
+# GitHub workflows (not needed in container)
+.github/
+
+# Examples
+examples/ 
