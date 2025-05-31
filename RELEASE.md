@@ -255,10 +255,19 @@ docker run --rm -v $(pwd)/output:/output prashanth1k/gingest:latest --source=htt
    - Verify import paths are correct
 
 4. **"Dependencies file is not found" warning:**
+
    ```
    Warning: Restore cache failed: Dependencies file is not found in /home/runner/work/gingest/gingest. Supported file pattern: go.sum
    ```
+
    Solution: This warning is harmless and has been fixed in the workflows. It occurs because gingest has no external dependencies (uses only Go standard library), so no `go.sum` file is created. The workflows now disable automatic caching to prevent this warning.
+
+5. **Line ending issues on Windows:**
+   ```
+   Code is not formatted properly. The following files need formatting:
+   warning: in the working copy of 'file.go', LF will be replaced by CRLF
+   ```
+   Solution: This has been fixed with `.gitattributes` file that enforces LF line endings for all text files. The CI workflows also use `autocrlf: false` to ensure consistent line endings across platforms.
 
 ### Testing Releases
 
