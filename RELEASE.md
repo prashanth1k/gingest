@@ -268,8 +268,12 @@ Before creating a release:
 # Run all tests
 make test-all
 
+# Check and fix formatting
+make fmt
+make fmt-check  # Should show no output if properly formatted
+
 # Check formatting and linting
-make fmt lint staticcheck
+make lint staticcheck
 
 # Test build for all platforms
 make build-all

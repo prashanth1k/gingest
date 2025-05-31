@@ -47,11 +47,17 @@ jobs:
 
       - name: Check formatting
         run: |
-          if [ "$(gofmt -s -l . | wc -l)" -gt 0 ]; then
-            echo "Code is not formatted properly:"
-            gofmt -s -l .
+          # Format all Go files and check if any changes were made
+          gofmt -s -w .
+          if [ -n "$(git status --porcelain)" ]; then
+            echo "Code is not formatted properly. The following files need formatting:"
+            git status --porcelain
+            echo ""
+            echo "Please run 'go fmt ./...' locally and commit the changes."
+            git diff
             exit 1
           fi
+          echo "Code formatting is correct"
         shell: bash
 
       - name: Run go vet

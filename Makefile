@@ -52,7 +52,13 @@ test-race:
 # Format code
 .PHONY: fmt
 fmt:
+	gofmt -s -w .
 	go fmt ./...
+
+# Check if code is formatted (run this before committing)
+.PHONY: fmt-check
+fmt-check:
+	gofmt -s -l .
 
 # Run linters
 .PHONY: lint
@@ -133,6 +139,7 @@ help:
 	@echo "  test-coverage  - Run tests with coverage"
 	@echo "  test-race      - Run tests with race detector"
 	@echo "  fmt            - Format code"
+	@echo "  fmt-check      - Check if code needs formatting (no output = good)"
 	@echo "  lint           - Run linters"
 	@echo "  staticcheck    - Run staticcheck"
 	@echo "  clean          - Clean build artifacts"
