@@ -66,7 +66,6 @@ var DefaultExclusions = struct {
 
 		// Dependencies - Rust
 		"target",
-		"Cargo.lock",
 
 		// Dependencies - C/C++
 		"build",
@@ -200,11 +199,24 @@ var DefaultExclusions = struct {
 		// Lock files (generated)
 		"package-lock.json",
 		"yarn.lock",
+		"pnpm-lock.yaml",
+		"bun.lockb",
 		"Pipfile.lock",
 		"poetry.lock",
+		"pdm.lock",
 		"Gemfile.lock",
 		"composer.lock",
 		"go.sum",
+		"Cargo.lock",
+		"mix.lock",
+		"packages.lock.json",
+		"project.assets.json",
+		"*.lock",
+		"flake.lock",
+		"deno.lock",
+		"shrinkwrap.yaml",
+		"npm-shrinkwrap.json",
+		"uv.lock",
 
 		// Environment files (may contain secrets)
 		".env",
