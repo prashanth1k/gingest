@@ -1,0 +1,27 @@
+# Ensure consistent line endings for Go files
+*.go text eol=lf
+*.mod text eol=lf
+*.sum text eol=lf
+
+# Ensure consistent line endings for common text files
+*.md text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
+*.json text eol=lf
+*.txt text eol=lf
+
+# Makefile should use LF
+Makefile text eol=lf
+
+# Dockerfile should use LF
+Dockerfile text eol=lf
+.dockerignore text eol=lf
+
+# Shell scripts should use LF
+*.sh text eol=lf
+
+# Binary files
+*.exe binary
+*.dll binary
+*.so binary
+*.dylib binary 

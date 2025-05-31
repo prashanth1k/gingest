@@ -18,6 +18,9 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          # Ensure consistent line endings across platforms
+          autocrlf: false
 
       - name: Set up Go
         uses: actions/setup-go@v4
@@ -47,14 +50,17 @@ jobs:
 
       - name: Check formatting
         run: |
-          # Format all Go files and check if any changes were made
-          gofmt -s -w .
-          if [ -n "$(git status --porcelain)" ]; then
+          # Check if any files need formatting (ignore line endings)
+          unformatted_files=$(gofmt -s -l .)
+          if [ -n "$unformatted_files" ]; then
             echo "Code is not formatted properly. The following files need formatting:"
-            git status --porcelain
+            echo "$unformatted_files"
             echo ""
             echo "Please run 'go fmt ./...' locally and commit the changes."
-            git diff
+            echo ""
+            echo "To fix formatting issues:"
+            echo "  go fmt ./..."
+            echo "  gofmt -s -w ."
             exit 1
           fi
           echo "Code formatting is correct"
