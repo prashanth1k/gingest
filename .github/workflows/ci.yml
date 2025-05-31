@@ -118,8 +118,11 @@ jobs:
 
           # Build for multiple platforms with version info
           GOOS=linux GOARCH=amd64 go build -ldflags "$LDFLAGS" -o gingest-linux-amd64 cmd/gingest/main.go
+          GOOS=linux GOARCH=arm64 go build -ldflags "$LDFLAGS" -o gingest-linux-arm64 cmd/gingest/main.go
           GOOS=darwin GOARCH=amd64 go build -ldflags "$LDFLAGS" -o gingest-darwin-amd64 cmd/gingest/main.go
+          GOOS=darwin GOARCH=arm64 go build -ldflags "$LDFLAGS" -o gingest-darwin-arm64 cmd/gingest/main.go
           GOOS=windows GOARCH=amd64 go build -ldflags "$LDFLAGS" -o gingest-windows-amd64.exe cmd/gingest/main.go
+          GOOS=windows GOARCH=arm64 go build -ldflags "$LDFLAGS" -o gingest-windows-arm64.exe cmd/gingest/main.go
 
       - name: List build artifacts
         run: |
@@ -140,16 +143,60 @@ jobs:
           cat checksums.txt
         shell: bash
 
-      - name: Upload build artifacts
+      - name: Upload Linux AMD64 binary
         uses: actions/upload-artifact@v4
         with:
-          name: gingest-binaries
-          path: |
-            gingest
-            gingest-linux-amd64
-            gingest-darwin-amd64
-            gingest-windows-amd64.exe
-            checksums.txt
+          name: gingest-linux-amd64
+          path: gingest-linux-amd64
+          retention-days: 30
+
+      - name: Upload Linux ARM64 binary
+        uses: actions/upload-artifact@v4
+        with:
+          name: gingest-linux-arm64
+          path: gingest-linux-arm64
+          retention-days: 30
+
+      - name: Upload macOS AMD64 binary
+        uses: actions/upload-artifact@v4
+        with:
+          name: gingest-darwin-amd64
+          path: gingest-darwin-amd64
+          retention-days: 30
+
+      - name: Upload macOS ARM64 binary
+        uses: actions/upload-artifact@v4
+        with:
+          name: gingest-darwin-arm64
+          path: gingest-darwin-arm64
+          retention-days: 30
+
+      - name: Upload Windows AMD64 binary
+        uses: actions/upload-artifact@v4
+        with:
+          name: gingest-windows-amd64.exe
+          path: gingest-windows-amd64.exe
+          retention-days: 30
+
+      - name: Upload Windows ARM64 binary
+        uses: actions/upload-artifact@v4
+        with:
+          name: gingest-windows-arm64.exe
+          path: gingest-windows-arm64.exe
+          retention-days: 30
+
+      - name: Upload native binary
+        uses: actions/upload-artifact@v4
+        with:
+          name: gingest-native-linux
+          path: gingest
+          retention-days: 30
+
+      - name: Upload checksums
+        uses: actions/upload-artifact@v4
+        with:
+          name: checksums.txt
+          path: checksums.txt
           retention-days: 30
 
   coverage:
