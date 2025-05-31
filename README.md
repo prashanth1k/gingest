@@ -295,3 +295,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - **Performance**: Fast and efficient processing leveraging Go's strengths
 - **Cross-Platform**: Works consistently across different operating systems
 - **Smart Processing**: Intelligently handle common repository elements like README files
+
