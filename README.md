@@ -78,7 +78,7 @@ gingest --source=https://github.com/user/repo.git --branch=develop --maxsize=104
 - `--include`: Comma-separated glob patterns for files to include (optional)
 - `--exclude`: Comma-separated glob patterns for files to exclude (optional)
 
-**Default exclude patterns**: `.git`, `*.log`, `node_modules`, `.DS_Store`, `Thumbs.db`, `*.tmp`, `*.temp`, `.vscode`, `.idea`, `*.swp`, `*.swo`, `*~`
+**Default exclusions**: Comprehensive list including dependency directories (`.venv`, `venv`, `node_modules`, `vendor`, `target`, `build`), version control (`.git`, `.svn`), IDE files (`.vscode`, `.idea`), OS files (`.DS_Store`, `Thumbs.db`), temporary files (`*.tmp`, `*.log`), binary files (`*.exe`, `*.dll`, `*.so`), media files (`*.jpg`, `*.mp4`, `*.mp3`), and many more. See [examples/exclusions_demo.md](examples/exclusions_demo.md) for the complete list. Use `--exclude=""` to disable defaults.
 
 ### Library Usage
 

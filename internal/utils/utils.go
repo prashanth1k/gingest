@@ -94,26 +94,6 @@ func ParsePatterns(patternsString string) []string {
 	return result
 }
 
-// GetDefaultExcludePatterns returns default patterns to exclude
-func GetDefaultExcludePatterns() []string {
-	return []string{
-		".git",
-		".git/*",
-		"*.log",
-		"node_modules",
-		"node_modules/*",
-		".DS_Store",
-		"Thumbs.db",
-		"*.tmp",
-		"*.temp",
-		".vscode",
-		".idea",
-		"*.swp",
-		"*.swo",
-		"*~",
-	}
-}
-
 // ShouldIncludeFile determines if a file should be included based on include/exclude patterns
 func ShouldIncludeFile(relativePath string, includePatterns, excludePatterns []string) bool {
 	fileName := filepath.Base(relativePath)

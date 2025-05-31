@@ -40,7 +40,7 @@ OPTIONS:
     --output=<file>        Output file path (default: digest.md)
     --branch=<name>        Target branch for Git repositories
     --maxsize=<bytes>      Maximum file size in bytes (default: 2MB)
-    --exclude=<patterns>   Comma-separated exclude patterns (default: .git,*.log,node_modules,etc.)
+    --exclude=<patterns>   Comma-separated exclude patterns (default: comprehensive list)
     --include=<patterns>   Comma-separated include patterns (overrides excludes)
     --version              Show version information
     --help, -h             Show this help message
@@ -53,8 +53,11 @@ DESCRIPTION:
     Supports GitHub, GitLab, and other Git hosting services. Files exceeding the
     size limit are skipped with a descriptive message.
 
-    Default exclude patterns: .git, *.log, node_modules, .DS_Store, Thumbs.db,
-    *.tmp, *.temp, .vscode, .idea, *.swp, *.swo, *~
+    Default exclusions include: dependency directories (.venv, venv, node_modules,
+    vendor, target, build, etc.), version control (.git, .svn), IDE files (.vscode,
+    .idea), OS files (.DS_Store, Thumbs.db), temporary files (*.tmp, *.log),
+    binary files (*.exe, *.dll, *.so), media files (*.jpg, *.mp4, *.mp3),
+    and many more. Use --exclude="" to disable defaults.
 
 For more information, visit: https://github.com/prashanth1k/gingest
 `)
@@ -113,12 +116,10 @@ func main() {
 	// Parse patterns
 	var excludeList []string
 	if *excludePatterns != "" {
-		if *excludePatterns == ".git,*.log,node_modules,etc." {
-			// Use default patterns
-			excludeList = utils.GetDefaultExcludePatterns()
-		} else {
-			excludeList = utils.ParsePatterns(*excludePatterns)
-		}
+		excludeList = utils.ParsePatterns(*excludePatterns)
+	} else {
+		// Use comprehensive default exclusions when no patterns specified
+		excludeList = utils.GetDefaultExcludePatterns()
 	}
 	includeList := utils.ParsePatterns(*includePatterns)
 
