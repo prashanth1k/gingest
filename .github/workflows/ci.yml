@@ -18,9 +18,12 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-        with:
-          # Ensure consistent line endings across platforms
-          autocrlf: false
+
+      - name: Configure Git line endings
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+        shell: bash
 
       - name: Set up Go
         uses: actions/setup-go@v4
@@ -101,9 +104,52 @@ jobs:
 
       - name: Build for multiple platforms
         run: |
-          GOOS=linux GOARCH=amd64 go build -o gingest-linux-amd64 cmd/gingest/main.go
-          GOOS=darwin GOARCH=amd64 go build -o gingest-darwin-amd64 cmd/gingest/main.go
-          GOOS=windows GOARCH=amd64 go build -o gingest-windows-amd64.exe cmd/gingest/main.go
+          # Get build information
+          VERSION="dev-$(git rev-parse --short HEAD)"
+          COMMIT=$(git rev-parse --short HEAD)
+          DATE=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+
+          echo "Building with version: $VERSION"
+          echo "Commit: $COMMIT"
+          echo "Date: $DATE"
+
+          LDFLAGS="-X main.Version=$VERSION -X main.GitCommit=$COMMIT -X main.BuildDate=$DATE"
+
+          # Build for multiple platforms with version info
+          GOOS=linux GOARCH=amd64 go build -ldflags "$LDFLAGS" -o gingest-linux-amd64 cmd/gingest/main.go
+          GOOS=darwin GOARCH=amd64 go build -ldflags "$LDFLAGS" -o gingest-darwin-amd64 cmd/gingest/main.go
+          GOOS=windows GOARCH=amd64 go build -ldflags "$LDFLAGS" -o gingest-windows-amd64.exe cmd/gingest/main.go
+
+      - name: List build artifacts
+        run: |
+          echo "Build artifacts created:"
+          ls -la gingest*
+        shell: bash
+
+      - name: Generate checksums
+        run: |
+          echo "Generating checksums..."
+          if command -v sha256sum >/dev/null 2>&1; then
+            sha256sum gingest* > checksums.txt
+          else
+            # macOS doesn't have sha256sum, use shasum instead
+            shasum -a 256 gingest* > checksums.txt
+          fi
+          echo "Checksums:"
+          cat checksums.txt
+        shell: bash
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: gingest-binaries
+          path: |
+            gingest
+            gingest-linux-amd64
+            gingest-darwin-amd64
+            gingest-windows-amd64.exe
+            checksums.txt
+          retention-days: 30
 
   coverage:
     name: Coverage

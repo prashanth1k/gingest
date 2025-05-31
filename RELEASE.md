@@ -267,7 +267,7 @@ docker run --rm -v $(pwd)/output:/output prashanth1k/gingest:latest --source=htt
    Code is not formatted properly. The following files need formatting:
    warning: in the working copy of 'file.go', LF will be replaced by CRLF
    ```
-   Solution: This has been fixed with `.gitattributes` file that enforces LF line endings for all text files. The CI workflows also use `autocrlf: false` to ensure consistent line endings across platforms.
+   Solution: This has been fixed with `.gitattributes` file that enforces LF line endings for all text files. The CI workflows also configure Git with `core.autocrlf false` and `core.eol lf` to ensure consistent line endings across platforms.
 
 ### Testing Releases
 
