@@ -23,8 +23,10 @@ jobs:
         uses: actions/setup-go@v4
         with:
           go-version: ${{ matrix.go-version }}
+          cache: false # Disable automatic caching since we have no dependencies
 
-      - name: Cache Go modules
+      - name: Cache Go modules (if go.sum exists)
+        if: hashFiles('**/go.sum') != ''
         uses: actions/cache@v3
         with:
           path: |
@@ -33,9 +35,6 @@ jobs:
           key: ${{ runner.os }}-go-${{ matrix.go-version }}-${{ hashFiles('**/go.sum') }}
           restore-keys: |
             ${{ runner.os }}-go-${{ matrix.go-version }}-
-
-      - name: Download dependencies
-        run: go mod download
 
       - name: Run unit tests
         run: go test -v ./...
@@ -77,6 +76,7 @@ jobs:
         uses: actions/setup-go@v4
         with:
           go-version: "1.21"
+          cache: false # Disable automatic caching since we have no dependencies
 
       - name: Build CLI
         run: go build -o gingest cmd/gingest/main.go
@@ -105,6 +105,7 @@ jobs:
         uses: actions/setup-go@v4
         with:
           go-version: "1.21"
+          cache: false # Disable automatic caching since we have no dependencies
 
       - name: Run tests with coverage
         run: go test -coverprofile=coverage.out ./...

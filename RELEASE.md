@@ -249,9 +249,16 @@ docker run --rm -v $(pwd)/output:/output prashanth1k/gingest:latest --source=htt
    Solution: Add `DOCKER_USERNAME` and `DOCKER_PASSWORD` to GitHub secrets
 
 3. **Build failures:**
+
    - Check Go version compatibility
    - Ensure all tests pass locally
    - Verify import paths are correct
+
+4. **"Dependencies file is not found" warning:**
+   ```
+   Warning: Restore cache failed: Dependencies file is not found in /home/runner/work/gingest/gingest. Supported file pattern: go.sum
+   ```
+   Solution: This warning is harmless and has been fixed in the workflows. It occurs because gingest has no external dependencies (uses only Go standard library), so no `go.sum` file is created. The workflows now disable automatic caching to prevent this warning.
 
 ### Testing Releases
 
@@ -289,3 +296,7 @@ Once you initialize Git:
 2. Set up repository secrets for Docker
 3. Create your first release: `git tag v1.0.0 && git push origin v1.0.0`
 4. Watch the GitHub Actions build and release automatically!
+
+```
+
+```

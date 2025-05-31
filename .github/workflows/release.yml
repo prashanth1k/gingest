@@ -20,6 +20,7 @@ jobs:
         uses: actions/setup-go@v4
         with:
           go-version: "1.21"
+          cache: false # Disable automatic caching since we have no dependencies
 
       - name: Run tests
         run: |
@@ -40,6 +41,7 @@ jobs:
         uses: actions/setup-go@v4
         with:
           go-version: "1.21"
+          cache: false # Disable automatic caching since we have no dependencies
 
       - name: Get version info
         id: version
