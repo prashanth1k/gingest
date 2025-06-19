@@ -115,10 +115,13 @@ func main() {
 
 	// Parse patterns
 	var excludeList []string
-	if *excludePatterns != "" {
+	// Check if exclude flag was explicitly set
+	excludeFlag := flag.Lookup("exclude")
+	if excludeFlag != nil && excludeFlag.Value.String() != excludeFlag.DefValue {
+		// Flag was explicitly set (even if to empty string)
 		excludeList = utils.ParsePatterns(*excludePatterns)
 	} else {
-		// Use comprehensive default exclusions when no patterns specified
+		// Flag was not set, use comprehensive default exclusions
 		excludeList = utils.GetDefaultExcludePatterns()
 	}
 	includeList := utils.ParsePatterns(*includePatterns)
