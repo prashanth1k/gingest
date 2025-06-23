@@ -28,19 +28,33 @@ USAGE:
     gingest --source=<path|url> [OPTIONS]
 
 EXAMPLES:
+    # Basic usage with default exclusions
     gingest --source=./my-project
+
+    # Remote repository
     gingest --source=https://github.com/user/repo.git --output=repo.md
-    gingest --source=./project --maxsize=1048576 --output=digest.md
-    gingest --source=https://github.com/user/repo.git --branch=develop
-    gingest --source=./project --exclude="*.log,node_modules,*.tmp"
-    gingest --source=./project --include="*.go,*.md" --exclude=".git"
+
+    # Add custom exclusions to defaults
+    gingest --source=./project --exclude="*.custom,temp-*,debug/"
+
+    # Include only specific file types (overrides all exclusions)
+    gingest --source=./project --include="*.go,*.py,*.js"
+
+    # Mixed: include specific types but exclude test files
+    gingest --source=./project --include="*.go,*.py" --exclude="*_test.go,test_*"
+
+    # Disable all exclusions (process everything)
+    gingest --source=./project --exclude=""
+
+    # Multiple directories and file patterns
+    gingest --source=./project --exclude="logs/,cache/,*.tmp,*.backup"
 
 OPTIONS:
     --source=<path|url>    Source path (local directory or Git URL) [REQUIRED]
     --output=<file>        Output file path (default: digest.md)
     --branch=<name>        Target branch for Git repositories
     --maxsize=<bytes>      Maximum file size in bytes (default: 2MB)
-    --exclude=<patterns>   Comma-separated exclude patterns (default: comprehensive list)
+    --exclude=<patterns>   Comma-separated exclude patterns (adds to defaults)
     --include=<patterns>   Comma-separated include patterns (overrides excludes)
     --version              Show version information
     --help, -h             Show this help message
@@ -57,7 +71,10 @@ DESCRIPTION:
     vendor, target, build, etc.), version control (.git, .svn), IDE files (.vscode,
     .idea), OS files (.DS_Store, Thumbs.db), temporary files (*.tmp, *.log),
     binary files (*.exe, *.dll, *.so), media files (*.jpg, *.mp4, *.mp3),
-    and many more. Use --exclude="" to disable defaults.
+    and many more.
+
+    Custom --exclude patterns are ADDED to defaults. Use --exclude="" to disable
+    all exclusions. Include patterns override both default and custom exclusions.
 
 For more information, visit: https://github.com/prashanth1k/gingest
 `)
@@ -118,8 +135,16 @@ func main() {
 	// Check if exclude flag was explicitly set
 	excludeFlag := flag.Lookup("exclude")
 	if excludeFlag != nil && excludeFlag.Value.String() != excludeFlag.DefValue {
-		// Flag was explicitly set (even if to empty string)
-		excludeList = utils.ParsePatterns(*excludePatterns)
+		// Flag was explicitly set
+		if *excludePatterns == "" {
+			// --exclude="" means disable all exclusions
+			excludeList = []string{}
+		} else {
+			// Add custom patterns to defaults
+			excludeList = utils.GetDefaultExcludePatterns()
+			customPatterns := utils.ParsePatterns(*excludePatterns)
+			excludeList = append(excludeList, customPatterns...)
+		}
 	} else {
 		// Flag was not set, use comprehensive default exclusions
 		excludeList = utils.GetDefaultExcludePatterns()

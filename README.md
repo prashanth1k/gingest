@@ -56,11 +56,20 @@ gingest --source=https://github.com/user/repo.git --output=repo_digest.md
 #### Process with include/exclude patterns
 
 ```bash
-# Include only Go and Python files
+# Include only Go and Python files (overrides all exclusions)
 gingest --source=./project --include="*.go,*.py" --output=code_digest.md
 
-# Exclude test files and documentation
-gingest --source=./project --exclude="*_test.go,*.md,docs/*" --output=digest.md
+# Add custom exclusions to defaults (keeps .venv, node_modules, etc. excluded)
+gingest --source=./project --exclude="*.custom,temp-*,debug/" --output=digest.md
+
+# Multiple directories and file patterns
+gingest --source=./project --exclude="logs/,cache/,*.tmp,*.backup,old_*"
+
+# Mixed: include specific types but also exclude test files
+gingest --source=./project --include="*.go,*.py" --exclude="*_test.go,test_*"
+
+# Disable all exclusions (process everything including .venv, node_modules)
+gingest --source=./project --exclude="" --output=everything.md
 ```
 
 #### Process specific branch with size limit
@@ -75,10 +84,12 @@ gingest --source=https://github.com/user/repo.git --branch=develop --maxsize=104
 - `--output`: Output file path (default: `digest.md`)
 - `--branch`: Target branch for Git repositories (optional)
 - `--maxsize`: Maximum file size in bytes (default: 2MB)
-- `--include`: Comma-separated glob patterns for files to include (optional)
-- `--exclude`: Comma-separated glob patterns for files to exclude (optional)
+- `--include`: Comma-separated glob patterns for files to include (overrides exclusions)
+- `--exclude`: Comma-separated glob patterns for files to exclude (adds to defaults)
 
-**Default exclusions**: Comprehensive list including dependency directories (`.venv`, `venv`, `node_modules`, `vendor`, `target`, `build`), version control (`.git`, `.svn`), IDE files (`.vscode`, `.idea`), OS files (`.DS_Store`, `Thumbs.db`), temporary files (`*.tmp`, `*.log`), binary files (`*.exe`, `*.dll`, `*.so`), media files (`*.jpg`, `*.mp4`, `*.mp3`), and many more. See [examples/exclusions_demo.md](examples/exclusions_demo.md) for the complete list. Use `--exclude=""` to disable defaults.
+**Default exclusions**: Comprehensive list including dependency directories (`.venv`, `venv`, `node_modules`, `vendor`, `target`, `build`), version control (`.git`, `.svn`), IDE files (`.vscode`, `.idea`), OS files (`.DS_Store`, `Thumbs.db`), temporary files (`*.tmp`, `*.log`), binary files (`*.exe`, `*.dll`, `*.so`), media files (`*.jpg`, `*.mp4`, `*.mp3`), and many more. See [examples/exclusions_demo.md](examples/exclusions_demo.md) for the complete list.
+
+**Custom exclusions are ADDED to defaults**. Use `--exclude=""` to disable all exclusions. Include patterns override both default and custom exclusions.
 
 ### Library Usage
 
@@ -295,4 +306,3 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - **Performance**: Fast and efficient processing leveraging Go's strengths
 - **Cross-Platform**: Works consistently across different operating systems
 - **Smart Processing**: Intelligently handle common repository elements like README files
-
